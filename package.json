@@ -1,0 +1,28 @@
+{
+  "name": "english-for-kids",
+  "version": "1.0.0",
+  "description": "Learning english language application for kids.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptatarsk/english-for-kids.git"
+  },
+  "keywords": [
+    "learning",
+    "english",
+    "kids"
+  ],
+  "author": "ptatarsk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ptatarsk/english-for-kids/issues"
+  },
+  "homepage": "https://github.com/ptatarsk/english-for-kids#readme",
+  "devDependencies": {
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
