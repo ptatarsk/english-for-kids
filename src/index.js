@@ -1,6 +1,8 @@
-import Controller from './js/controller/Controller';
+import Application from './js/Application';
+import 'bootstrap';
 
 window.onload = () => {
-  const app = new Controller();
-  app.view.test();
+  const app = new Application();
+  app.renderApp();
+  app.initApp();
 };

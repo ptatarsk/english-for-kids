@@ -1,0 +1,55 @@
+.toolbar-layout {
+  @extend %wrapper;
+  @extend %matherial-shadow;
+  margin-top: 40px;
+  padding: 40px 35px 40px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+
+  @media (max-width: 1019px) {
+    margin-top: 0;
+    border-radius: 0 0 20px 20px;
+  }
+}
+
+.menu {
+  @extend %matherial-shadow;
+  border-radius: 0 20px 20px 0;
+  position: fixed;
+  overflow: auto;
+  top: 0px;
+  left: -35%;
+  width: 35%;
+  opacity: 0;
+  padding: 20px 0px;
+  height: 100%;
+  background-color: #f6f6f6;
+  color: #343838;
+  -webkit-transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  @media (max-width: 768px) {
+    left: -50%;
+    width: 50%;
+    border-radius: 0 0 20px 0;
+  }
+  @media (max-width: 375px) {
+    left: -100%;
+    width: 100%;
+  }
+  &_active {
+    left: 0px;
+    opacity: 1;
+  }
+}
+
+.menu-button {
+  cursor: pointer;
+  -webkit-transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  &_active {
+    z-index: 4;
+    transform: rotate(90deg);
+  }
+}

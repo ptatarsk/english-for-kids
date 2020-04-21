@@ -1,0 +1,99 @@
+$active-train:rgba(42, 143, 29, 0.801);
+$inactive-train: rgb(112, 112, 112);
+$active-play: rgba(241, 88, 16, 0.801);
+$inactive: rgba(241, 88, 16, 0.801);
+$toggler: #73a1b2;
+
+.toggle-switch {
+  background: #ccc;
+  width: 184px;
+  height: 44px;
+  border: 2px solid $color-shadow;
+  overflow: hidden;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 10px;
+
+  &:after {
+    content: " ";
+    border-radius: 20px;
+    display: block;
+    width: 82px;
+    height: 40px;
+    margin-left: -2px;
+    background-color: $active-train;
+    transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
+  }
+
+  .active & {
+    &:after {
+      background-color: $inactive;
+      margin-left: 100px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100px;
+
+    &:after {
+      width: 41px;
+    }
+
+    .active & {
+      &:after {
+        background-color: $inactive;
+        margin-left: 58px;
+      }
+    }
+  }
+
+  @media (max-width: 375px) {
+    width: 62px;
+
+    &:after {
+      width: 31px;
+    }
+
+    .active & {
+      &:after {
+        background-color: $inactive;
+        margin-left: 31px;
+      }
+    }
+  }
+}
+
+.toggle-label {
+  display: inline-block;
+  @extend %font-prime;
+  @include font(20px, 20px, bold);
+  text-shadow: 0 0 2px #ccc;
+  letter-spacing: 0.1em;
+
+  @media (max-width: 768px) {
+    @include font(18px, 18px, bold);
+  }
+
+  @media (max-width: 375px) {
+    @include font(15px, 15px, bold);
+  }
+}
+
+.toggle-label-off {
+  color: $active-train;
+}
+
+.toggle-label-on {
+  color: $inactive-train;
+}
+
+.active {
+  .toggle-label-off {
+    color: $inactive-train;
+  }
+
+  .toggle-label-on {
+    color: $inactive;
+  }
+}
