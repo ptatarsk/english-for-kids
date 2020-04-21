@@ -6,7 +6,18 @@ body {
     animation-timing-function: ease;
     animation-iteration-count: infinite;
     animation-direction: alternate; 
-    background-size: 300% 200vh;
+	background-size: 300% 200vh;
+}
+
+.body-active {
+	background: linear-gradient(45deg, #3a1c71, #d76d77, #ffaf7b);
+	background-size: contain;
+    animation-name: gradient;
+    animation-duration: 10s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+    animation-direction: alternate; 
+	background-size: 300% 200vh;
 }
 
 @keyframes gradient {
@@ -20,3 +31,17 @@ body {
 		background-position: 0% 50%;
 	}
 }
+
+.page-layout {
+	@extend %wrapper;
+	@extend %matherial-shadow;
+	margin-top: 40px;
+	padding: 40px 35px 40px 35px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: white;
+	@media (max-width: 1019px) {
+	  //border-radius: 0 0 20px 20px;
+	}
+  }
