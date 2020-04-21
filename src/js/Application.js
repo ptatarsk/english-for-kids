@@ -72,6 +72,7 @@ class Application {
     console.log('this.cardsArray: ', this.cardsArray);
     this.cardsArray.forEach((el) => {
       this.createCard(el);
+
       
     });
   }
