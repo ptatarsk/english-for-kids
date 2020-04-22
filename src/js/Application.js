@@ -24,9 +24,9 @@ class Application {
 
   renderToolbar() {
     this.menu = this.createAppElement('div', ['menu'], this.toolbar);
-    this.menuButtonHolder = this.createAppElement('div', [], this.toolbar);
+    this.menuButtonHolder = this.createAppElement('div', ['menu-button-wrapper'], this.toolbar);
     this.menuButton = this.createAppElement('img', ['menu-button'], this.menuButtonHolder, {
-      src: '../assets/icons/icon-menu.svg',
+      src: './assets/icons/icon-menu.svg',
     });
     this.toggler = this.createAppElement('div', ['toggle'], this.toolbar);
     this.togglerLeftCaption = this.createAppElement('div', ['toggle-label', 'toggle-label-off'], this.toggler);
@@ -37,7 +37,7 @@ class Application {
   }
 
   renderMenu() {
-    this.menuItems = this.menuItems.concat(...this.cards[0]);
+    this.menuItems = this.menuItems.concat(...this.cards[0][0].cardsList);
     this.menuItems.push('Statistic');
     this.menuContainer = this.createAppElement('ul', ['menu-container'], this.menu);
     this.menuItems.forEach((el) => {
@@ -46,47 +46,93 @@ class Application {
     });
   }
 
-  createCard() {
-    this.cardContainer = this.createAppElement('div', ['card-container'], this.cardHolder);
-    this.frontSide = this.createAppElement('div', ['card-container'], this.cardContainer);
-    this.backSide = this.createAppElement('div', ['card-container'], this.cardContainer);
-    this.cardWord = this.createAppElement('p', ['card-text'], this.frontSide);
-    this.cardImage = this.createAppElement('img', ['card-image'], this.frontSide, {
-      src: '../assets/icons/icon-menu.svg',
-    });
-    this.cardControls = this.createAppElement('div', ['card-controls'], this.frontSide);
-    this.cardTranslate = this.createAppElement('img', ['card-translate'], this.cardControls);
-    this.cardSound = this.createAppElement('img', ['card-sound'], this.cardControls);
-    this.cardAudio = this.createAppElement('audio', ['card-audio'], this.cardControls, {
-      src: '../assets/icons/icon-menu.svg',
-    });
-    this.cardImageBack = this.createAppElement('img', ['card-image'], this.backSide, {
-      src: '../assets/icons/icon-menu.svg',
-    });
-    this.cardTranslation = this.createAppElement('p', ['card-translate'], this.backSide);
+  createCard(el) {
+    if (this.mode === 'game') {
+      this.cardContainer = this.createAppElement('div', ['card-container'], this.cardHolder);
+      this.cardWrapper = this.createAppElement('div', ['card-wrapper'], this.cardContainer);
+      this.cardImage = this.createAppElement('img', ['card-image', 'in-game'], this.cardWrapper, {
+        src: `${el.image}`,
+      });
+    } else if (this.mode === 'training') {
+      this.cardContainer = this.createAppElement('div', ['card-container'], this.cardHolder);
+      this.cardWrapper = this.createAppElement('div', ['card-wrapper-train'], this.cardContainer);
+      this.frontSide = this.createAppElement('div', ['front-side'], this.cardWrapper);
+      this.backSide = this.createAppElement('div', ['back-side'], this.cardWrapper);
+      this.cardWord = this.createAppElement('p', ['card-text'], this.frontSide);
+      this.cardWord.innerText = `${el.word}`;
+      this.cardImage = this.createAppElement('img', ['card-image'], this.frontSide, {
+        src: `${el.image}`,
+      });
+      this.cardControls = this.createAppElement('div', ['card-controls'], this.frontSide);
+      this.cardTranslate = this.createAppElement('img', ['card-translate'], this.cardControls, {
+        src: './assets/icons/translate.svg',
+      });
+      this.cardSound = this.createAppElement('img', ['card-sound'], this.cardControls, {
+        src: './assets/icons/play.svg',
+      });
+      this.cardAudio = this.createAppElement('audio', ['card-audio'], this.cardControls, {
+        src: `${el.audioSrc}`,
+      });
+      this.cardImageBack = this.createAppElement('img', ['card-image'], this.backSide, {
+        src: `${el.image}`,
+      });
+      this.cardTranslation = this.createAppElement('p', ['card-translation'], this.backSide);
+      this.cardTranslation.innerText = `${el.translation}`;
+    }
   }
 
   renderCards() {
-    this.cardHolder = this.createAppElement('div', ['card-holder'], this.pageView);
-    this.cardsArray = this.cards[this.menuItems.indexOf(this.page)];
-    console.log('this.cardsArray: ', this.cardsArray);
-    this.cardsArray.forEach((el) => {
-      this.createCard(el);
-
-      
-    });
+    if (this.page === 'Main') {
+      this.cardsArray = this.cards[0][0].cardsList;
+      this.cardsImages = this.cards[0][0].image;
+      for (let i = 0; i < this.cardsArray.length; i += 1) {
+        this.cardContainer = this.createAppElement('div', ['card-container'], this.cardHolder);
+        this.cardWrapper = this.createAppElement('div', ['card-wrapper', 'card-category'], this.cardContainer);
+        this.cardWord = this.createAppElement('p', ['card-text', 'card-category'], this.cardWrapper);
+        this.cardWord.innerText = `${this.cardsArray[i]}`;
+        this.cardImage = this.createAppElement('img', ['card-image', 'card-category'], this.cardWrapper, {
+          src: `${this.cardsImages[i]}`,
+        });
+      }
+    } else {
+      this.cardsArray = this.cards[this.menuItems.indexOf(this.page)];
+      this.cardsArray.forEach((el) => {
+        this.createCard(el);
+      });
+      if (this.mode === 'game') {
+        this.cardSound = this.createAppElement('img', ['play-game'], this.pageView, {
+          src: './assets/icons/play.svg',
+        });
+      }
+    }
   }
 
-  // renderStatistic() {
-
-  // }
+  renderStatistic() {
+    this.pageView.querySelectorAll('div').forEach((el) => {
+      el.remove();
+    });
+    this.pageView.querySelectorAll('img').forEach((el) => {
+      el.remove();
+    });
+    this.cardHolder = this.createAppElement('div', ['card-holder'], this.pageView);
+  }
 
   renderPage() {
-    // if (this.page === 'Statistic') {
-    //   this.renderStatistic();
-    // } else {
-    this.renderCards();
-    // }
+    if (this.page === 'Statistic') {
+      this.renderStatistic();
+    } else {
+      this.pageView.querySelectorAll('div').forEach((el) => {
+        el.remove();
+      });
+      this.pageView.querySelectorAll('img').forEach((el) => {
+        el.remove();
+      });
+      if (this.mode === 'game') {
+        this.answers = this.createAppElement('div', ['answers'], this.pageView);
+      }
+      this.cardHolder = this.createAppElement('div', ['card-holder'], this.pageView);
+      this.renderCards();
+    }
   }
 
   renderApp() {
@@ -107,6 +153,7 @@ class Application {
       this.toggler.classList.add('active');
       this.body.classList.add('body-active');
     }
+    this.renderPage();
   }
 
   menuEvents() {
@@ -129,8 +176,23 @@ class Application {
       event.target.classList.add('item-active');
       this.page = event.target.innerText;
     }
-    console.log(this.page);
-    console.log(cards[this.menuItems.indexOf(this.page)]);
+    this.renderPage();
+  }
+
+  startGame() {
+    this.currntSet = [];
+    this.cards[this.menuItems.indexOf(this.page)].forEach((el) => {
+      this.currntSet = this.currntSet.concat(el.word);
+    });
+    this.pageView.querySelectorAll('.play-game').forEach((el) => {
+      el.remove();
+    });
+    this.repeat = this.createAppElement('img', ['repeat-game'], this.pageView, {
+      src: './assets/icons/repeat.svg',
+    });
+    if (document.querySelector('.in-game')) {
+      this.randomWord = this.currntSet[Math.floor(Math.random() * this.currntSet.length)];
+    }
   }
 
   initApp() {
@@ -149,13 +211,39 @@ class Application {
         this.changePageEvents(event);
       }
     });
+    this.pageView.addEventListener('click', (event) => {
+      if (this.page === 'Main') {
+        if (event.target.className.includes('card-category')) {
+          this.page = event.target.closest('.card-wrapper').childNodes[0].innerText;
+          this.menuContainer.querySelectorAll('li').forEach((el) => {
+            if (el.innerText === this.page) {
+              el.classList.add('item-active');
+            } else {
+              el.classList.remove('item-active');
+            }
+          });
+          this.renderPage();
+        }
+      } else if (this.mode === 'training') {
+        if (event.target.className.includes('card-translate')) {
+          if (!event.target.closest('.card-wrapper-train').classList.contains('flipped')) {
+            event.target.closest('.card-wrapper-train').classList.add('flipped');
+          }
+        } else if (event.target.className.includes('card-sound')) {
+          event.target.nextSibling.play();
+        }
+      } else if (this.mode === 'game') {
+        if (event.target.className.includes('play-game')) {
+          this.startGame();
+        }
+      }
+    });
+    this.pageView.addEventListener('mouseout', (event) => {
+      if (event.target.className.includes('flipped')) {
+        event.target.classList.remove('flipped');
+      }
+    });
   }
 }
 
 export default Application;
-
-/*
-    this.toolbar.querySelectorAll('div').forEach((el) => {
-      el.remove();
-    });
-*/

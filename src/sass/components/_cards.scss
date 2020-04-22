@@ -1,0 +1,119 @@
+.card-holder {
+  padding: 20px;
+  @include columns (25%);
+  @media (max-width: 768px) {
+    @include columns (50%);
+  }
+  @media (max-width: 375px) {
+    @include columns (100%);
+  }
+}
+
+.card-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px 20px 10px;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.card-wrapper {
+  @extend %matherial-shadow;
+  padding: 10px;
+  border: 1px solid black;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+}
+
+.card-translate {
+  width: 45%;
+  height: 45%;
+  padding: 10px;
+}
+
+.card-sound {
+  padding: 10px;
+  width: 45%;
+  height: 45%;
+}
+
+.card-controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.card-wrapper-train {
+  @extend %matherial-shadow;
+  padding: 10px;
+	transition: 0.5s;
+	transform-style: preserve-3d;
+  position: relative;
+  border: 1px solid black;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.front-side, .back-side {
+	backface-visibility: hidden;
+	transition: 0.5s;
+	transform-style: preserve-3d;
+}
+
+.back-side {
+  z-index: 2;
+  transform: rotateY(180deg);
+  padding: 10px;
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+}
+
+.front-side {
+  transform: rotateY(0deg);
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-translation,
+.card-text {
+  text-align: center;
+  color: #734a9b;
+  @extend %font-prime;
+  @include font(22px, 22px, bold);
+  text-shadow: 0 0 2px #ccc;
+  letter-spacing: 0.1em;
+}
+
+.card-image {
+  border: 1px solid black;
+}
+
+.play-game,
+.repeat-game {
+  align-self: center;
+  justify-self: center;
+  padding: 10px;
+  width: 20%;
+  height: 20%;
+  cursor: pointer;
+}
+
+.repeat-game {
+  background: orange;
+  border-radius: 30%;
+  width: 20%;
+  height: 20%;
+}

@@ -76,7 +76,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.join(__dirname, 'dist'),
     port: 3000,
     hot: isDevelope,
   },
@@ -115,8 +115,37 @@ module.exports = {
       use: cssLoader('sass-loader'),
     },
     {
-      test: /\.(png|svg|jpe?g|gif)$/,
-      use: ['file-loader'],
+      test: /\.(png|jpe?g|gif)$/,
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            outputPath: './assets/images/',
+          },
+        },
+      ],
+    },
+    {
+      test: /\.(mp3)$/,
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            outputPath: './assets/audio/',
+          },
+        },
+      ],
+    },
+    {
+      test: /\.(svg)$/,
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            outputPath: './assets/icons/',
+          },
+        },
+      ],
     },
     {
       test: /\.(ttf|woff|woff2|eot)$/,

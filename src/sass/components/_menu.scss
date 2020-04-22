@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 3;
   position: fixed;
   overflow: auto;
   top: 0px;
@@ -27,7 +28,7 @@
   opacity: 0;
   padding: 20px 0px;
   height: 100%;
-  background-color: #f6f6f6;
+  background-color: white;
   color: rgba(241, 88, 16, 0.801);
   -webkit-transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
   transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
@@ -46,12 +47,15 @@
   }
 }
 
+.menu-button-wrapper {
+  z-index: 5;
+}
+
 .menu-button {
   cursor: pointer;
   -webkit-transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
   transition: all 0.35s cubic-bezier(0.6, 0.05, 0.28, 0.91);
   &_active {
-    z-index: 4;
     transform: rotate(90deg);
   }
 }
@@ -61,7 +65,7 @@
 }
 
 .menu-item {
-  padding: 20px 0;
+  padding: 10px 0;
   @extend %font-prime;
   @include font(28px, 28px, bold);
   text-shadow: 0 0 2px #ccc;
