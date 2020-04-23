@@ -67,8 +67,31 @@ body {
 	text-align: center;
 	color: #734a9b;
 	@extend %font-prime;
-	@include font(60px, 40px, bold);
+	@include font(60px, 70px, bold);
 	text-shadow: 0 0 2px #ccc;
 	letter-spacing: 0.1em;
 	cursor: pointer;
+}
+
+.table-row {
+	border: 1px solid black;
+	border-radius: 20px;
+}
+
+.table-col {
+	padding: 8px;
+	text-align: center;
+	color: #734a9b;
+	@extend %font-prime;
+	@include font(18px, 18px, bold);
+	text-shadow: 0 0 2px #ccc;
+	letter-spacing: 0.1em;
+	@media (max-width: 768px) {
+		padding: 6px;
+		@include font(8px, 8px, bold);
+	  }
+	  @media (max-width: 375px) {
+		padding: 4px;
+		@include font(6px, 6px, bold);
+	}
 }

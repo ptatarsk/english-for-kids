@@ -8,7 +8,7 @@ class Application {
     this.cards = cards;
     this.menuItems = ['Main'];
     this.isGame = false;
-    this.stats = localStorage.getItem('stats') || [];
+    this.stats = JSON.parse(localStorage.getItem('stats')) || [];
   }
 
   createAppElement(elementType, styleRules = [], appendTo = this.body, attributes = {}, where = 'end') {
@@ -113,6 +113,43 @@ class Application {
     }
   }
 
+  addValueToStat(value, parameter, word) {
+    this.stats.forEach((el) => {
+      if (el.word === word) {
+        this.stats[this.stats.indexOf(el)][parameter] += value;
+        this.stats[this.stats.indexOf(el)].accuracy = (el.success / el.errors) * 100;
+        if (!Number.isFinite(Math.round(this.stats[this.stats.indexOf(el)].accuracy))) {
+          this.stats[this.stats.indexOf(el)].accuracy = 0;
+        }
+      }
+    });
+    localStorage.setItem('stats', JSON.stringify(this.stats));
+  }
+
+  createNewStat() {
+    this.cards.forEach((el) => {
+      el.forEach((element) => {
+        this.stats.push({
+          category: this.menuItems[this.cards.indexOf(el)],
+          word: element.word,
+          translation: element.translation,
+          errors: 0,
+          success: 0,
+          accuracy: 0,
+        });
+      });
+    });
+    this.stats[0] = {
+      category: 'categories',
+      word: 'words',
+      translation: 'translate',
+      errors: 'errors',
+      success: 'success',
+      accuracy: 'accuracy(%)',
+    };
+    localStorage.setItem('stats', JSON.stringify(this.stats));
+  }
+
   renderStatistic() {
     this.pageView.querySelectorAll('div').forEach((el) => {
       el.remove();
@@ -120,7 +157,17 @@ class Application {
     this.pageView.querySelectorAll('img').forEach((el) => {
       el.remove();
     });
-    this.cardHolder = this.createAppElement('div', ['card-holder'], this.pageView);
+    if (!this.stats.length) {
+      this.createNewStat();
+    }
+    this.cardHolder = this.createAppElement('div', [], this.pageView);
+    this.stats.forEach((element) => {
+      const row = this.createAppElement('tr', ['table-row'], this.cardHolder);
+      Object.values(element).forEach((item) => {
+        const col = this.createAppElement('td', ['table-col'], row);
+        col.innerText = `${item}`;
+      });
+    });
   }
 
   renderPage() {
@@ -198,7 +245,9 @@ class Application {
       this.randomAudio = this.createAppElement('audio', ['card-audio'], this.cardControls, {
         src: `${this.randomWord.audioSrc}`,
       });
-      this.randomAudio.play();
+      setTimeout(() => {
+        this.randomAudio.play();
+      }, 500);
     } else {
       this.isGame = false;
       if (this.incorrectAnswers === 0) {
@@ -206,22 +255,24 @@ class Application {
       } else {
         this.lose.play();
       }
-      this.pageView.querySelectorAll('div').forEach((el) => {
-        el.remove();
-      });
-      this.pageView.querySelectorAll('img').forEach((el) => {
-        el.remove();
-      });
-      this.pageView.querySelectorAll('audio').forEach((el) => {
-        el.remove();
-      });
-      this.mesagge = this.createAppElement('div', [], this.pageView);
-      this.mesaggeText = this.createAppElement('p', ['message'], this.mesagge);
-      if (this.incorrectAnswers === 0) {
-        this.mesaggeText.innerText = 'Success!';
-      } else {
-        this.mesaggeText.innerText = `Errors: ${this.incorrectAnswers}! Try again!`;
-      }
+      setTimeout(() => {
+        this.pageView.querySelectorAll('div').forEach((el) => {
+          el.remove();
+        });
+        this.pageView.querySelectorAll('img').forEach((el) => {
+          el.remove();
+        });
+        this.pageView.querySelectorAll('audio').forEach((el) => {
+          el.remove();
+        });
+        this.mesagge = this.createAppElement('div', [], this.pageView);
+        this.mesaggeText = this.createAppElement('p', ['message'], this.mesagge);
+        if (this.incorrectAnswers === 0) {
+          this.mesaggeText.innerText = 'Success!';
+        } else {
+          this.mesaggeText.innerText = `Errors: ${this.incorrectAnswers}! Try again!`;
+        }
+      }, 1500);
     }
   }
 
@@ -304,14 +355,20 @@ class Application {
               }, 'start');
               event.target.classList.remove('in-game');
               event.target.classList.add('out-game');
-              this.nextTurn();
+              this.addValueToStat(1, 'success', this.randomWord.word);
+              setTimeout(() => {
+                this.nextTurn();
+              }, 1000);
             } else {
               this.incorrectAnswers += 1;
+              this.addValueToStat(1, 'errors', this.randomWord.word);
               this.wrong.play();
               this.createAppElement('img', ['answers-img'], this.answers, {
                 src: './assets/icons/star.svg',
               }, 'start');
-              this.randomAudio.play();
+              setTimeout(() => {
+                this.randomAudio.play();
+              }, 1000);
             }
           }
         } else if (!this.isGame) {
