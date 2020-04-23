@@ -7,6 +7,7 @@ class Application {
     this.body = document.querySelector('body');
     this.cards = cards;
     this.menuItems = ['Main'];
+    this.isGame = false;
     this.stats = localStorage.getItem('stats') || [];
   }
 
@@ -52,6 +53,7 @@ class Application {
       this.cardWrapper = this.createAppElement('div', ['card-wrapper'], this.cardContainer);
       this.cardImage = this.createAppElement('img', ['card-image', 'in-game'], this.cardWrapper, {
         src: `${el.image}`,
+        alt: `${el.word}`,
       });
     } else if (this.mode === 'training') {
       this.cardContainer = this.createAppElement('div', ['card-container'], this.cardHolder);
@@ -127,6 +129,9 @@ class Application {
       this.pageView.querySelectorAll('img').forEach((el) => {
         el.remove();
       });
+      this.pageView.querySelectorAll('audio').forEach((el) => {
+        el.remove();
+      });
       if (this.mode === 'game') {
         this.answers = this.createAppElement('div', ['answers'], this.pageView);
       }
@@ -153,6 +158,7 @@ class Application {
       this.toggler.classList.add('active');
       this.body.classList.add('body-active');
     }
+    this.isGame = false;
     this.renderPage();
   }
 
@@ -179,20 +185,66 @@ class Application {
     this.renderPage();
   }
 
+  nextTurn() {
+    if (this.currntSet.length) {
+      const min = 1;
+      const max = this.currntSet.length;
+      this.rand = Math.floor(min + Math.random() * (max + 1 - min)) - 1;
+      this.randomWord = this.currntSet[this.rand];
+      this.randomAudio = this.createAppElement('audio', ['card-audio'], this.cardControls, {
+        src: `${this.randomWord.audioSrc}`,
+      });
+      this.randomAudio.play();
+    } else {
+      this.isGame = false;
+      if (this.incorrectAnswers === 0) {
+        this.win.play();
+      } else {
+        this.lose.play();
+      }
+      this.pageView.querySelectorAll('div').forEach((el) => {
+        el.remove();
+      });
+      this.pageView.querySelectorAll('img').forEach((el) => {
+        el.remove();
+      });
+      this.pageView.querySelectorAll('audio').forEach((el) => {
+        el.remove();
+      });
+      this.mesagge = this.createAppElement('div', [], this.pageView);
+      this.mesaggeText = this.createAppElement('p', ['message'], this.mesagge);
+      if (this.incorrectAnswers === 0) {
+        this.mesaggeText.innerText = 'Success!';
+      } else {
+        this.mesaggeText.innerText = `Errors: ${this.incorrectAnswers}! Try again!`;
+      }
+    }
+  }
+
   startGame() {
-    this.currntSet = [];
-    this.cards[this.menuItems.indexOf(this.page)].forEach((el) => {
-      this.currntSet = this.currntSet.concat(el.word);
-    });
+    this.correctAnswers = 0;
+    this.incorrectAnswers = 0;
+    this.currntSet = this.cards[this.menuItems.indexOf(this.page)].slice();
+    this.isGame = true;
     this.pageView.querySelectorAll('.play-game').forEach((el) => {
       el.remove();
     });
     this.repeat = this.createAppElement('img', ['repeat-game'], this.pageView, {
       src: './assets/icons/repeat.svg',
     });
-    if (document.querySelector('.in-game')) {
-      this.randomWord = this.currntSet[Math.floor(Math.random() * this.currntSet.length)];
-    }
+    this.ok = this.createAppElement('audio', ['card-audio'], this.pageView, {
+      src: './assets/audio/correct.mp3',
+    });
+    this.wrong = this.createAppElement('audio', ['card-audio'], this.pageView, {
+      src: './assets/audio/error.mp3',
+    });
+    this.win = this.createAppElement('audio', ['card-audio'], this.pageView, {
+      src: './assets/audio/success.mp3',
+    });
+    this.lose = this.createAppElement('audio', ['card-audio'], this.pageView, {
+      src: './assets/audio/failure.mp3',
+    });
+    this.nextTurn();
   }
 
   initApp() {
@@ -235,6 +287,32 @@ class Application {
       } else if (this.mode === 'game') {
         if (event.target.className.includes('play-game')) {
           this.startGame();
+        } else if (event.target.className.includes('repeat-game')) {
+          this.randomAudio.play();
+        } else if (this.isGame) {
+          if (event.target.attributes.alt && event.target.className.includes('in-game')) {
+            if (event.target.getAttribute('alt') === this.randomWord.word) {
+              this.correctAnswers += 1;
+              this.currntSet.splice(this.rand, 1);
+              this.ok.play();
+              this.createAppElement('img', ['answers-img'], this.answers, {
+                src: './assets/icons/star-win.svg',
+              });
+              event.target.classList.remove('in-game');
+              event.target.classList.add('out-game');
+              this.nextTurn();
+            } else {
+              this.incorrectAnswers += 1;
+              this.wrong.play();
+              this.createAppElement('img', ['answers-img'], this.answers, {
+                src: './assets/icons/star.svg',
+              });
+              this.randomAudio.play();
+            }
+          } else {
+            this.page = 'Main';
+            this.renderPage();
+          }
         }
       }
     });
