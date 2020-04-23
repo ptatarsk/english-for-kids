@@ -11,7 +11,7 @@ class Application {
     this.stats = localStorage.getItem('stats') || [];
   }
 
-  createAppElement(elementType, styleRules = [], appendTo = this.body, attributes = {}) {
+  createAppElement(elementType, styleRules = [], appendTo = this.body, attributes = {}, where = 'end') {
     const element = document.createElement(elementType);
     styleRules.forEach((el) => {
       element.classList.add(el);
@@ -19,7 +19,11 @@ class Application {
     Object.keys(attributes).forEach((el) => {
       element.setAttribute(`${el}`, `${attributes[el]}`);
     });
-    appendTo.append(element);
+    if (where === 'end') {
+      appendTo.append(element);
+    } else if (where === 'start') {
+      appendTo.prepend(element);
+    }
     return element;
   }
 
@@ -297,7 +301,7 @@ class Application {
               this.ok.play();
               this.createAppElement('img', ['answers-img'], this.answers, {
                 src: './assets/icons/star-win.svg',
-              });
+              }, 'start');
               event.target.classList.remove('in-game');
               event.target.classList.add('out-game');
               this.nextTurn();
@@ -306,13 +310,20 @@ class Application {
               this.wrong.play();
               this.createAppElement('img', ['answers-img'], this.answers, {
                 src: './assets/icons/star.svg',
-              });
+              }, 'start');
               this.randomAudio.play();
             }
-          } else {
-            this.page = 'Main';
-            this.renderPage();
           }
+        } else if (!this.isGame) {
+          this.page = 'Main';
+          this.menuContainer.querySelectorAll('li').forEach((el) => {
+            if (el.innerText === this.page) {
+              el.classList.add('item-active');
+            } else {
+              el.classList.remove('item-active');
+            }
+          });
+          this.renderPage();
         }
       }
     });
