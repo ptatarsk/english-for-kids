@@ -157,9 +157,6 @@ class Application {
     this.pageView.querySelectorAll('img').forEach((el) => {
       el.remove();
     });
-    if (!this.stats.length) {
-      this.createNewStat();
-    }
     this.cardHolder = this.createAppElement('div', [], this.pageView);
     this.stats.forEach((element) => {
       const row = this.createAppElement('tr', ['table-row'], this.cardHolder);
@@ -171,6 +168,9 @@ class Application {
   }
 
   renderPage() {
+    if (!this.stats.length) {
+      this.createNewStat();
+    }
     if (this.page === 'Statistic') {
       this.renderStatistic();
     } else {
